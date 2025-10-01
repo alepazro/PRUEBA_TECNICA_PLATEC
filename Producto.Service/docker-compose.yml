@@ -1,0 +1,27 @@
+services:
+  product.service:
+    image: ${DOCKER_REGISTRY-}productservice
+    build:
+      context: .
+      dockerfile: Backend/Domain/Product/Product.Service/Dockerfile
+    ports:
+      - 8082:80
+      - 8083:443
+    networks:
+      - backend
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password1234
+    volumes:
+      - ./Backend/Infrastructure/Database/mssql:/var/opt/mssql/data
+    ports:
+      - 1434:1433
+    networks:
+     - backend
+networks:
+  backend:
+    name: backend
+    driver: bridge
